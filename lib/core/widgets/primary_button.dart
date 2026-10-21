@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
@@ -5,12 +6,13 @@ import '../theme.dart';
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  bool isLoading;
-  PrimaryButton({
+  final bool isLoading;
+  
+  const PrimaryButton({
     super.key,
     required this.text,
     required this.onPressed,
-    this.isLoading = false,
+     this .isLoading=false,
   });
 
   @override

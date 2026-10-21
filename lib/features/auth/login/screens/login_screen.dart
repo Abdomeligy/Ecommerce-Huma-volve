@@ -1,4 +1,7 @@
 
+import 'package:dio/dio.dart';
+import 'package:ecommerce_app_huma_volve/core/network/api_client%20.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/login/services/login_sevices.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/widgets/custom_text_field.dart';
@@ -16,15 +19,64 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
 
+  late final LoginSevices loginSevices;
+  late final ApiClient apiClient;
+
+  bool isLoading = false;
+
+  Future<void> login() async {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await loginSevices.login(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      print("ACESS token :${response.accessToken}");
+      print("Refresh token :${response.refreshToken}");
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => MainNavigationScreen(),
+        ),
+      );
+    } on DioException catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
+    super.initState();
+
     emailController = TextEditingController();
     passwordController = TextEditingController();
 
-    super.initState();
+    apiClient = ApiClient();
+    loginSevices = LoginSevices(apiClient);
   }
 
   @override
@@ -47,18 +99,26 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 60),
-                Icon(Icons.shopping_bag, size: 80, color: AppTheme.primary),
+                Icon(
+                  Icons.shopping_bag,
+                  size: 80,
+                  color: AppTheme.primary,
+                ),
                 const SizedBox(height: 32),
                 Text(
                   'Welcome Back!',
-                  style: Theme.of(context).textTheme.displayLarge
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayLarge
                       ?.copyWith(fontSize: 32),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Login to continue your shopping',
-                  style: Theme.of(context).textTheme.bodyMedium
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
                       ?.copyWith(fontSize: 16),
                   textAlign: TextAlign.center,
                 ),
@@ -108,16 +168,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 32),
                 PrimaryButton(
                   text: 'Login',
+                  isLoading: isLoading,
                   onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => MainNavigationScreen(),
-                        ),
-                      );
-                    }
-                  },
+                      if (!isLoading) {
+                    login();
+                   }
+                   },
                 ),
+
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -132,19 +190,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               context,
                               animation,
                               secondaryAnimation,
-                            ) => const SignUpScreen(),
-                            transitionsBuilder:
-                                (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
+                            ) =>
+                                const SignUpScreen(),
+                            transitionsBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child,
+                            ) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
                           ),
                         );
                       },
