@@ -1,18 +1,37 @@
-import 'package:ecommerce_app_huma_volve/features/home/services/models/products_model.dart';
-import 'package:flutter/material.dart';
 
-import '../../../../core/dummy_data.dart';
+import 'package:flutter/material.dart';
 import '../../../../core/theme.dart';
+import '../../domain/entities/home_product_entity.dart';
+import '../../services/models/products_model.dart';
 import '../../../details/screens/product_details_screen.dart';
 
 class ProductCard extends StatelessWidget {
-  //final Product product;
-  final Productsmodel productsmodel;  
-  
-  const ProductCard({super.key, required this.productsmodel});
+  final HomeProductEntity product;
+
+  const ProductCard({
+    super.key,
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final productModel = Productsmodel(
+      id: product.id,
+      title: product.title,
+      slug: product.slug,
+      price: product.price,
+      description: product.description,
+      category: Category(
+        id: product.category.id,
+        name: product.category.name,
+      ),
+      images: product.images,
+    );
+
+    final imageUrl = product.images.isNotEmpty
+        ? product.images.first
+        : '';
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -20,11 +39,16 @@ class ProductCard extends StatelessWidget {
           PageRouteBuilder(
             transitionDuration: const Duration(milliseconds: 500),
             pageBuilder: (context, animation, secondaryAnimation) =>
-                ProductDetailsScreen( productsmodel: productsmodel,),
+                ProductDetailsScreen(
+              productsmodel: productModel,
+            ),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
           ),
         );
       },
@@ -49,17 +73,32 @@ class ProductCard extends StatelessWidget {
               child: Stack(
                 children: [
                   Hero(
-                    tag: 'product-${productsmodel.id}',
+                    tag: 'product-${product.id}',
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(24),
                       ),
-                      child: Image.network(
-                        productsmodel.images![0],
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
+                      child: imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Center(
+                                  child: Icon(
+                                    Icons.image_not_supported,
+                                    size: 40,
+                                  ),
+                                );
+                              },
+                            )
+                          : const Center(
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 40,
+                              ),
+                            ),
                     ),
                   ),
                   Positioned(
@@ -84,13 +123,13 @@ class ProductCard extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      productsmodel.title??"",
+                      product.title,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -104,7 +143,7 @@ class ProductCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '\$${productsmodel.price!.toStringAsFixed(2)}',
+                          '\$${product.price.toStringAsFixed(2)}',
                           style: const TextStyle(
                             color: AppTheme.primary,
                             fontWeight: FontWeight.bold,

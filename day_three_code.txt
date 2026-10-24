@@ -1,0 +1,2544 @@
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\main.dart ========== 
+import 'package:ecommerce_app_huma_volve/features/main_navigation/screens/main_navigation_screen.dart';
+import 'package:flutter/material.dart';
+
+import 'core/theme.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'E-Commerce App',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      //home: const SplashScreen(),
+        home: const MainNavigationScreen(),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\core\dummy_data.dart ========== 
+import 'package:flutter/material.dart';
+
+class Product {
+  final String id;
+  final String name;
+  final String description;
+  final double price;
+  final String imageUrl;
+  final List<Color> colors;
+  final List<String> sizes;
+
+  Product({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.imageUrl,
+    required this.colors,
+    required this.sizes,
+  });
+}
+
+final dummyProducts = [
+  Product(
+    id: '1',
+    name: 'Classic White Sneakers',
+    description: 'Comfortable and stylish white sneakers for everyday use.',
+    price: 59.99,
+    imageUrl: 'https://picsum.photos/seed/sneakers/300/300',
+    colors: [Colors.white, Colors.black, Colors.grey],
+    sizes: ['40', '41', '42', '43'],
+  ),
+  Product(
+    id: '2',
+    name: 'Denim Jacket',
+    description: 'A classic denim jacket that never goes out of style.',
+    price: 89.99,
+    imageUrl: 'https://picsum.photos/seed/jacket/300/300',
+    colors: [Colors.blue, Colors.black],
+    sizes: ['S', 'M', 'L', 'XL'],
+  ),
+  Product(
+    id: '3',
+    name: 'Wireless Headphones',
+    description: 'High-quality noise-canceling wireless headphones.',
+    price: 199.99,
+    imageUrl: 'https://picsum.photos/seed/headphones/300/300',
+    colors: [Colors.black, Colors.grey],
+    sizes: ['One Size'],
+  ),
+  Product(
+    id: '4',
+    name: 'Smart Watch',
+    description: 'Stay connected and track your fitness with this smart watch.',
+    price: 149.99,
+    imageUrl: 'https://picsum.photos/seed/watch/300/300',
+    colors: [Colors.black, Colors.blue, Colors.pink],
+    sizes: ['One Size'],
+  ),
+];
+
+class CartItem {
+  final Product product;
+  final int quantity;
+  final Color selectedColor;
+  final String selectedSize;
+
+  CartItem({
+    required this.product,
+    required this.quantity,
+    required this.selectedColor,
+    required this.selectedSize,
+  });
+}
+
+final dummyCart = [
+  CartItem(
+    product: dummyProducts[0],
+    quantity: 1,
+    selectedColor: Colors.white,
+    selectedSize: '42',
+  ),
+  CartItem(
+    product: dummyProducts[2],
+    quantity: 2,
+    selectedColor: Colors.black,
+    selectedSize: 'One Size',
+  ),
+];
+
+class UserProfile {
+  final String name;
+  final String email;
+  final String profilePictureUrl;
+
+  UserProfile({
+    required this.name,
+    required this.email,
+    required this.profilePictureUrl,
+  });
+}
+
+final dummyUser = UserProfile(
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+  profilePictureUrl: 'https://picsum.photos/seed/user/150/150',
+);
+
+final dummyCategories = [
+  'All',
+  'Shoes',
+  'Clothing',
+  'Accessories',
+  'Electronics',
+];
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\core\theme.dart ========== 
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class AppTheme {
+  static const Color primary = Color(0xFF1E2022); 
+  static const Color primaryVariant = Color(0xFF000000);
+  static const Color accent = Color(0xFFE94560); 
+  static const Color background = Color(0xFFF8F9FA);
+  static const Color surface = Colors.white;
+  static const Color textPrimary = Color(0xFF2B2D42);
+  static const Color textSecondary = Color(0xFF8D99AE);
+  static const Color error = Color(0xFFD90429);
+
+  static ThemeData get lightTheme {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: const ColorScheme.light(
+        primary: primary,
+        secondary: accent,
+        surface: surface,
+        error: error,
+      ),
+      scaffoldBackgroundColor: background,
+      textTheme: ThemeData.light().textTheme.copyWith(
+        displayLarge: GoogleFonts.playfairDisplay(
+          color: textPrimary,
+          fontWeight: FontWeight.w700,
+        ),
+        displayMedium: GoogleFonts.playfairDisplay(
+          color: textPrimary,
+          fontWeight: FontWeight.w700,
+        ),
+        headlineLarge: GoogleFonts.poppins(
+          color: textPrimary,
+          fontWeight: FontWeight.w600,
+        ),
+        bodyLarge: GoogleFonts.poppins(color: textPrimary),
+        bodyMedium: GoogleFonts.poppins(color: textSecondary),
+      ).apply(
+        fontFamily: GoogleFonts.poppins().fontFamily,
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: background,
+        elevation: 0,
+        iconTheme: IconThemeData(color: primary),
+        titleTextStyle: TextStyle(
+          color: primary,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\core\constants\api_constants.dart ========== 
+class ApiConstants {
+  static const String baseUrl = "https://api.escuelajs.co/api/v1/";
+} 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\core\constants\api_endpoints.dart ========== 
+class ApiEndpoints {
+  static final String loginEndpoint = "auth/login";
+    static final String signupEndpoint = "users";
+        static final String categoryEndpoint = "categories";
+          static final String productsEndpoint = "products";
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\core\failure\failure.dart ========== 
+class Failure {
+  final String failureMessage;
+  Failure ({required this.failureMessage});
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\core\network\api_client .dart ========== 
+import 'package:dio/dio.dart';
+import 'package:ecommerce_app_huma_volve/core/constants/api_constants.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+class ApiClient {
+  Dio dio;
+  ApiClient() : dio = Dio(BaseOptions(baseUrl: ApiConstants.baseUrl)){
+dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 90,
+        enabled: kDebugMode,
+        filter: (options, args){
+            // don't print requests with uris containing '/posts' 
+            if(options.path.contains('/posts')){
+              return false;
+            }
+            // don't print responses with unit8 list data
+            return !args.isResponse || !args.hasUint8ListData;
+          }
+      )
+    );
+
+
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\core\widgets\custom_text_field.dart ========== 
+import 'package:flutter/material.dart';
+
+class CustomTextField extends StatefulWidget {
+  final String hintText;
+  final bool isPassword;
+  final IconData prefixIcon;
+  final String? Function(String?)? validator;
+  final TextEditingController? controller;
+  final TextInputType? keyboardType;
+
+  const CustomTextField({
+    super.key,
+    required this.hintText,
+    this.isPassword = false,
+    required this.prefixIcon,
+    this.validator,
+    this.controller,
+    this.keyboardType,
+  });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  bool _obscureText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.isPassword;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.05),
+            spreadRadius: 2,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: widget.controller,
+        obscureText: _obscureText,
+        validator: widget.validator,
+        keyboardType: widget.keyboardType,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          hintStyle: TextStyle(color: Colors.grey.shade400),
+          prefixIcon: Icon(widget.prefixIcon, color: Colors.grey.shade600),
+          suffixIcon: widget.isPassword
+              ? IconButton(
+                  icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey.shade600,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                )
+              : null,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+          contentPadding: const EdgeInsets.symmetric(vertical: 20),
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\core\widgets\primary_button.dart ========== 
+
+import 'package:flutter/material.dart';
+
+import '../theme.dart';
+
+class PrimaryButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final bool isLoading;
+  
+  const PrimaryButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+     this .isLoading=false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primary.withValues(alpha: 0.3),
+            spreadRadius: 0,
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+        gradient: const LinearGradient(
+          colors: [AppTheme.primary, Color(0xFF3F4145)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          shadowColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          minimumSize: const Size(double.infinity, 56),
+        ),
+        child: isLoading
+            ? CircularProgressIndicator(color: Colors.white)
+            : Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\auth\login\models\login_model.dart ========== 
+ 
+class loginmodel {
+  String? accessToken;
+  String? refreshToken;
+
+  loginmodel({this.accessToken, this.refreshToken});
+
+  loginmodel.fromJson(Map<String, dynamic> json) {
+    accessToken = json['access_token'];
+    refreshToken = json['refresh_token'];
+  }
+
+  
+} 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\auth\login\screens\login_screen.dart ========== 
+
+import 'package:dio/dio.dart';
+import 'package:ecommerce_app_huma_volve/core/network/api_client%20.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/login/services/login_sevices.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../core/widgets/custom_text_field.dart';
+import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/theme.dart';
+import '../../../main_navigation/screens/main_navigation_screen.dart';
+import '../../sign_up/screens/sign_up_screen.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+
+  late final LoginSevices loginSevices;
+  late final ApiClient apiClient;
+
+  bool isLoading = false;
+
+  Future<void> login() async {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await loginSevices.login(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      print("ACESS token :${response.accessToken}");
+      print("Refresh token :${response.refreshToken}");
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => MainNavigationScreen(),
+        ),
+      );
+    } on DioException catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+
+    apiClient = ApiClient();
+    loginSevices = LoginSevices(apiClient);
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(32.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 60),
+                Icon(
+                  Icons.shopping_bag,
+                  size: 80,
+                  color: AppTheme.primary,
+                ),
+                const SizedBox(height: 32),
+                Text(
+                  'Welcome Back!',
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayLarge
+                      ?.copyWith(fontSize: 32),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Login to continue your shopping',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 64),
+                CustomTextField(
+                  controller: emailController,
+                  hintText: 'Email Address',
+                  prefixIcon: Icons.email_outlined,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: passwordController,
+                  hintText: 'Password',
+                  prefixIcon: Icons.lock_outline,
+                  isPassword: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      color: AppTheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                PrimaryButton(
+                  text: 'Login',
+                  isLoading: isLoading,
+                  onPressed: () {
+                      if (!isLoading) {
+                    login();
+                   }
+                   },
+                ),
+
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Don\'t have an account? '),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                            ) =>
+                                const SignUpScreen(),
+                            transitionsBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child,
+                            ) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: AppTheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\auth\login\services\login_sevices.dart ========== 
+
+import 'package:ecommerce_app_huma_volve/core/constants/api_endpoints.dart';
+import 'package:ecommerce_app_huma_volve/core/network/api_client .dart';
+import 'package:ecommerce_app_huma_volve/features/auth/login/models/login_model.dart';
+
+class LoginSevices {
+  ApiClient apiClient;
+  LoginSevices(this.apiClient);
+Future<loginmodel> 
+ login({required String email, required String password}) async {
+    final response = await apiClient.dio.post(
+      ApiEndpoints.loginEndpoint,
+      data: {"email": email, "password": password},
+    );
+    final Map<String, dynamic> JsonData = response.data;
+    final modelData = loginmodel.fromJson(JsonData);
+  
+    return modelData;
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\auth\sign_up\models\signup_req_model.dart ========== 
+class SignupReqModel {
+  String name;
+  String email;
+  String password;
+  SignupReqModel({
+    required this.email,
+    required this.name,
+    required this.password,
+  });
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\auth\sign_up\models\signup_res_model.dart ========== 
+class signupResmodel {
+  int? id;
+  String? email;
+  String? password;
+  String? name;
+  String? role;
+  String? avatar;
+  String? creationAt;
+  String? updatedAt;
+
+  signupResmodel(
+      {this.id,
+      this.email,
+      this.password,
+      this.name,
+      this.role,
+      this.avatar,
+      this.creationAt,
+      this.updatedAt});
+
+  signupResmodel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    email = json['email'];
+    password = json['password'];
+    name = json['name'];
+    role = json['role'];
+    avatar = json['avatar'];
+    creationAt = json['creationAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  
+} 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\auth\sign_up\screens\sign_up_screen.dart ========== 
+
+import 'package:dio/dio.dart';
+import 'package:ecommerce_app_huma_volve/core/network/api_client%20.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/sign_up/models/signup_req_model.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/sign_up/services/signup_service.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../core/widgets/custom_text_field.dart';
+import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/theme.dart';
+import '../../login/screens/login_screen.dart';
+
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController nameController;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+
+  bool isLoading = false;
+
+  late final SignupService signupService;
+  late final ApiClient apiClient;
+
+  @override
+  void initState() {
+    super.initState();
+
+    nameController = TextEditingController();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+
+    // Initialize ApiClient first
+    apiClient = ApiClient();
+
+    // Then initialize SignupService
+    signupService = SignupService(apiClient);
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(32.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 40),
+
+                Icon(
+                  Icons.person_add,
+                  size: 80,
+                  color: AppTheme.primary,
+                ),
+
+                const SizedBox(height: 32),
+
+                Text(
+                  'Create Account',
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayLarge
+                      ?.copyWith(fontSize: 32),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  'Sign up to get started',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 48),
+
+                CustomTextField(
+                  controller: nameController,
+                  hintText: 'Full Name',
+                  prefixIcon: Icons.person_outline,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your full name';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                CustomTextField(
+                  controller: emailController,
+                  hintText: 'Email Address',
+                  prefixIcon: Icons.email_outlined,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+
+                    if (!value.contains('@')) {
+                      return 'Please enter a valid email';
+                    }
+
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                CustomTextField(
+                  controller: passwordController,
+                  hintText: 'Password',
+                  prefixIcon: Icons.lock_outline,
+                  isPassword: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 40),
+
+                PrimaryButton(
+                  isLoading: isLoading,
+                  text: 'Sign Up',
+                  onPressed: () async {
+                    if (!(_formKey.currentState?.validate() ?? false)) {
+                      return;
+                    }
+
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    try {
+                      await signupService.signUp(
+                        SignupReqModel(
+                          email: emailController.text.trim(),
+                          name: nameController.text.trim(),
+                          password: passwordController.text,
+                        ),
+                      );
+
+                      if (!mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Signup successful'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } on DioException catch (e) {
+                      if (!mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            e.response?.data?.toString() ??
+                                e.message ??
+                                'Signup failed',
+                          ),
+                          backgroundColor:
+                              const Color.fromARGB(255, 148, 32, 51),
+                        ),
+                      );
+                    } catch (e) {
+                      if (!mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error: $e'),
+                          backgroundColor:
+                              const Color.fromARGB(255, 148, 32, 51),
+                        ),
+                      );
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    }
+                  },
+                ),
+
+                const SizedBox(height: 24),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Already have an account? '),
+
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                            ) =>
+                                const LoginScreen(),
+                            transitionsBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child,
+                            ) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          color: AppTheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\auth\sign_up\services\signup_service.dart ========== 
+import 'package:ecommerce_app_huma_volve/core/constants/api_endpoints.dart';
+import 'package:ecommerce_app_huma_volve/core/network/api_client%20.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/sign_up/models/signup_req_model.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/sign_up/models/signup_res_model.dart';
+
+class SignupService {
+  ApiClient apiClient;
+  SignupService(this.apiClient);
+  Future<signupResmodel> signUp(SignupReqModel signupreqmodel) async {
+    final response = await apiClient.dio.post(
+      ApiEndpoints.signupEndpoint,
+      data: {
+        "email": signupreqmodel.name,
+        "name": signupreqmodel.email,
+        "password": signupreqmodel.password,
+
+        "avatar": "data:image/webp;base64,UklGRtQDAABXRUJQVlA4IMgDAADQEgCdASpjAGsAPwVYwWCru6urkqNwIIlnBvjmadGHWAucDd1VQ8t3j3wCl/uAcMVgRltrifUGem1VN6RRF/iHnTC9mDPyqo55icsWHcjKB0eUZ+5m4kIiZG+5qn+whJGXuyic5Bmtz/tTdM8bb9B307bEo54qOQWJOtDlnB1Asv4INMBfJpJl/3KBQZT9D0XNyPkh2PfGNxyVxaO4vAAA/vMCgDQEZcQn6NG9FbBRJUaTWTNRvpDfYBsLUQmq7FjQw+sPdYgM/4Ty0Ou8i5mX2skoB4jQbcEFjwqhVGTKf3TA56m/eK7YEhpmvBWXmwqb+vuTGu8VRb20wN88ynl674mWpXtW+ppA3HyAWhpY2HOCsbXqYgW3BkZk547j7q5z2z21EJ9tCyp/7LUU6Oo4AvMbzP01dFqGRxoO8IU1d3mOwWU+lBzsS0++Un+j9ULhHDP4s5YSII6tX7YT+/VGk3rpI6Wv2us779Q/hmUjKX/OCEpLQB0fljuCBVLqrfao5LuHbq5uQK4ISjDbm5/sTvhrGJMW8AX3ekJ/TEsvs6eNRnIIFb7Q9Ah9AJBlnsoPPHnZjyCZgOumnuVWpf3HHMgrL1SqZ5sRVZ1cpv1PfKOkNIVQJ86NV8Y0a0PXedwjaRdpEsUBGqXPWtLPaquD9SesUeNsBlzwPVHHvYskLKxcQZhIsa1jI62+5WJrBDJEgRw/AmBPBqok2699sSf3/75vDwhDVURCJSvJSKkW+h/wQjkYSubmQj0DZTCOlgPdBUy16LDDog1CMXpptJqrihvM5QXDyieXQZiH0TslTsVsyGxS2z0hQQKYV2zbm4wLwZmCzsdS9MlOhX5k1HR+huokIDjZPYfm7JB3R1JXJV+yxhxO6kli7BZ8lk/97ggmKtpZqcsShOZ3Y97Cqsp0eW/8COct32Y3PBrlQs17d1xze1E7OlryDWSW/Gliow2F8Nkeiop88GFMWyAyV+HxstEskWD62TcGWQnarIZb4P7JnQbmZFiFStfdxu7Dq/vPaASmfz0//E3X5YK7vfeUZc1Mpcd+7XuU2QY+M6pq2W04ttmK4gJ/gKAeY27l6oZmcvPO7eoiXvF2T4wkDvpv4SgGhnsJCAMfLiYpcEdRKT7osl5S8M4OdAeD/sL3mJ6DuC+8K5BuqIogP10JuoKoUoiJR1tf3vq2dak1xHXvl/AyFnaMvMoS0JJez+Z9TM9ViA139Hw5w955DlvJNumPUs1nsqBzfSEsNV7akNL/WnA/JP7YLobGSG91xZPpdjdv1DhJuAYAAA==",
+      },
+    );
+
+    final JsonData = response.data;
+    final dartData = signupResmodel.fromJson(JsonData);
+    return dartData;
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\cart\screens\cart_screen.dart ========== 
+import 'package:flutter/material.dart';
+import '../../../core/dummy_data.dart';
+import '../../../core/theme.dart';
+import '../widgets/cart_item_card.dart';
+import '../../../core/widgets/primary_button.dart';
+
+class CartScreen extends StatelessWidget {
+  const CartScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    double subtotal = dummyCart.fold(0, (sum, item) => sum + (item.product.price * item.quantity));
+    double tax = subtotal * 0.1;
+    double total = subtotal + tax;
+
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      appBar: AppBar(
+        title: const Text('My Cart'),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              itemCount: dummyCart.length,
+              itemBuilder: (context, index) {
+                return CartItemCard(cartItem: dummyCart[index]);
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withValues(alpha: 0.1),
+                  spreadRadius: 2,
+                  blurRadius: 20,
+                  offset: const Offset(0, -10),
+                ),
+              ],
+            ),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Subtotal:', style: TextStyle(color: Colors.grey.shade600, fontSize: 16)),
+                      Text('\$${subtotal.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Tax (10%):', style: TextStyle(color: Colors.grey.shade600, fontSize: 16)),
+                      Text('\$${tax.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Divider(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Total:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '\$${total.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  PrimaryButton(
+                    text: 'Checkout',
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Processing Checkout...'),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          backgroundColor: AppTheme.primary,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\cart\widgets\cart_item_card.dart ========== 
+import 'package:flutter/material.dart';
+import '../../../core/dummy_data.dart';
+import '../../../core/theme.dart';
+
+class CartItemCard extends StatelessWidget {
+  final CartItem cartItem;
+
+  const CartItemCard({super.key, required this.cartItem});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.05),
+            spreadRadius: 2,
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              cartItem.product.imageUrl,
+              width: 90,
+              height: 90,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  cartItem.product.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Size: ${cartItem.selectedSize}',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '\$${cartItem.product.price.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: AppTheme.primary,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppTheme.background,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          _buildQuantityButton(Icons.remove, () {}),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              '${cartItem.quantity}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          _buildQuantityButton(Icons.add, () {}),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuantityButton(IconData icon, VoidCallback onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, size: 14, color: AppTheme.primary),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\details\screens\product_details_screen.dart ========== 
+import 'package:ecommerce_app_huma_volve/features/home/services/models/products_model.dart';
+import 'package:flutter/material.dart';
+
+import '../../../core/theme.dart';
+import '../../../core/widgets/primary_button.dart';
+
+class ProductDetailsScreen extends StatefulWidget {
+  //final Product product;
+  final Productsmodel productsmodel;
+
+  const ProductDetailsScreen({super.key, required this.productsmodel});
+
+  @override
+  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
+}
+
+class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 400,
+            pinned: true,
+            backgroundColor: AppTheme.background,
+            leading: IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.arrow_back_ios_new, size: 16),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            actions: [
+              IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.favorite_border, size: 18),
+                ),
+                onPressed: () {},
+              ),
+              const SizedBox(width: 8),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              background: Hero(
+                tag: 'product-${widget.productsmodel.id}',
+                child: Image.network(
+                  widget.productsmodel.images![0],
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+              transform: Matrix4.translationValues(0.0, -32.0, 0.0),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.productsmodel.title??"",
+                            style: Theme.of(context).textTheme.headlineLarge
+                                ?.copyWith(fontSize: 28, height: 1.2),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          '\$${widget.productsmodel.price!.toStringAsFixed(2)}',
+                          style: Theme.of(context).textTheme.headlineLarge
+                              ?.copyWith(color: AppTheme.primary, fontSize: 24),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Description',
+                      style: Theme.of(context).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.productsmodel.description??"",
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(height: 1.6, fontSize: 16),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Select Color',
+                      style: Theme.of(context).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    //ColorSelector(
+                      //colors: widget.productsmodel.colors,
+                      //selectedColor: _selectedColor,
+                      //onColorSelected: (color) {
+                       // setState(() {
+                        //  _selectedColor = color;
+                      //  });
+                    //  },
+                    //),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Select Size',
+                      style: Theme.of(context).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    //SizeSelector(
+                    //  sizes: widget.productsmodel.sizes,
+                      //selectedSize: _selectedSize,
+                      //onSizeSelected: (size) {
+                        //setState(() {
+                         // _selectedSize = size;
+                        //});
+                      //},
+                    //),
+                    const SizedBox(height: 32),
+                    PrimaryButton(
+                      text: 'Add to Cart',
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              '${widget.productsmodel.title} added to cart',
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            backgroundColor: AppTheme.primary,
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\details\widgets\color_selector.dart ========== 
+import 'package:flutter/material.dart';
+
+class ColorSelector extends StatelessWidget {
+  final List<Color> colors;
+  final Color selectedColor;
+  final ValueChanged<Color> onColorSelected;
+
+  const ColorSelector({
+    super.key,
+    required this.colors,
+    required this.selectedColor,
+    required this.onColorSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: colors.map((color) {
+        final isSelected = color == selectedColor;
+        return GestureDetector(
+          onTap: () => onColorSelected(color),
+          child: Container(
+            margin: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+                width: 2,
+              ),
+            ),
+            child: CircleAvatar(
+              radius: 16,
+              backgroundColor: color,
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\details\widgets\size_selector.dart ========== 
+import 'package:flutter/material.dart';
+
+class SizeSelector extends StatelessWidget {
+  final List<String> sizes;
+  final String selectedSize;
+  final ValueChanged<String> onSizeSelected;
+
+  const SizeSelector({
+    super.key,
+    required this.sizes,
+    required this.selectedSize,
+    required this.onSizeSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: sizes.map((size) {
+        final isSelected = size == selectedSize;
+        return GestureDetector(
+          onTap: () => onSizeSelected(size),
+          child: Container(
+            margin: const EdgeInsets.only(right: 12),
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected ? Theme.of(context).primaryColor : Colors.grey.shade300,
+              ),
+            ),
+            child: Text(
+              size,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.black87,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\Cubit\home_cubit.dart ========== 
+import 'package:ecommerce_app_huma_volve/features/home/Cubit/home_states.dart';
+import 'package:ecommerce_app_huma_volve/features/home/services/home_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class HomeCubit extends Cubit<HomeStates> {
+  final HomeService homeService;
+  HomeCubit(this.homeService) : super(HomeInitial());
+
+  void loadingHomeData() async {
+    emit(CategoriesLoading());
+    try {
+      final Categories = await homeService.getCategories();
+      emit(CategoriesSuccess(Categories));
+      final products = await homeService.getproducts(Categories[0].hashCode);
+      emit(productSuccess(products));
+    } catch (e) {
+      emit(productError(e.toString()));
+    }
+  }
+
+  void getproductsBycatogryId(int id) async {
+    emit(productLoading());
+    try {
+      final products = await homeService.getproducts(id);
+      emit(productSuccess(products));
+    } catch (e) {
+      emit(productError(e.toString()));
+    }
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\Cubit\home_states.dart ========== 
+import 'package:ecommerce_app_huma_volve/features/home/services/models/category_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/services/models/products_model.dart';
+
+abstract class HomeStates {}
+
+class HomeInitial extends HomeStates {}
+
+class CategoriesLoading extends HomeStates {}
+
+class CategoriesSuccess extends HomeStates {
+  final List<Categorymodel> categories;
+  CategoriesSuccess(this.categories);
+}
+
+class CategoriesError extends HomeStates {
+  final String errorMassage;
+  CategoriesError(this.errorMassage);
+}
+
+
+class productLoading  extends HomeStates{
+  
+}
+class productSuccess extends HomeStates {
+  final List<Productsmodel> products;
+  productSuccess(this.products);
+}
+class  productError extends HomeStates {
+    final String errorMassage;
+  productError(this.errorMassage);
+
+} 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\domain\entities\home_category_entity.dart ========== 
+class HomeCategoryEntity {
+    final int id;
+  final   String name;
+
+   const HomeCategoryEntity({this.id=0, this.name=""});
+
+
+  
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\domain\entities\home_product_entity.dart ========== 
+import 'package:ecommerce_app_huma_volve/features/home/domain/entities/home_category_entity.dart';
+
+
+class HomeProductEntity {
+ final   int id;
+   final String title;
+     final  String slug;
+      final int price;
+      final String description;
+       final HomeCategoryEntity category;
+      final List<String> images;
+
+   const HomeProductEntity({
+    this.id = 0,
+    this.title = "",
+    this.slug = "",
+    this.price = 0,
+    this.description = "",
+    this.category = const HomeCategoryEntity(),
+    this.images =const [""],
+  });
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\domain\repository\home_repository.dart ========== 
+import 'package:ecommerce_app_huma_volve/features/home/domain/entities/home_category_entity.dart';
+
+abstract class HomeRepository {
+  Future<Either<,List<HomeCategoryEntity>> getCategories() ; 
+  
+
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\screens\home_screen.dart ========== 
+import 'package:ecommerce_app_huma_volve/features/home/Cubit/home_cubit.dart';
+import 'package:ecommerce_app_huma_volve/features/home/Cubit/home_states.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/theme.dart';
+import 'widgets/product_card.dart';
+import 'widgets/category_chip.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedCategoryIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withValues(alpha: 0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.menu,
+                            color: AppTheme.primary,
+                          ),
+                        ),
+                        CircleAvatar(
+                          radius: 24,
+                          backgroundImage: NetworkImage( 'https://i.pravatar.cc/150'),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    Text(
+                      'Explore',
+                      style: Theme.of(context).textTheme.displayLarge
+                          ?.copyWith(fontSize: 36),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      'Best trendy collection!',
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(fontSize: 18),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withValues(alpha: 0.05),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search clothes...',
+                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ),
+                          suffixIcon: Container(
+                            margin: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primary,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.tune,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    SizedBox(
+                      height: 44,
+                      child: BlocBuilder<HomeCubit, HomeStates>(
+                        builder: (context, state) {
+                          if (state is CategoriesLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (state is CategoriesError) {
+                            return Center(child: Text(state.errorMassage));
+                          }
+
+                          if (state is CategoriesSuccess) {
+                            final categories = state.categories;
+
+                            if (categories.isEmpty) {
+                              return const Center(
+                                child: Text('No categories available'),
+                              );
+                            }
+
+                            return ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: categories.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(width: 12),
+                              itemBuilder: (context, index) {
+                                final Category = categories[index];
+                                return CategoryChip(
+                                  label: Category.name ?? "all",
+                                  isSelected: _selectedCategoryIndex == index,
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedCategoryIndex = index;
+                                    });
+
+                                    context
+                                        .read<HomeCubit>()
+                                        .getproductsBycatogryId(Category.id!);
+                                  },
+                                );
+                              },
+                            );
+                          }
+
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            BlocBuilder<HomeCubit, HomeStates>(
+              builder: (context, state) {
+                if (state is productLoading) {
+                  return const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
+                }
+
+                if (state is productError) {
+                  return SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(state.errorMassage),
+                      ),
+                    ),
+                  );
+                }
+
+                if (state is productSuccess) {
+                  final products = state.products;
+
+                  if (products.isEmpty) {
+                    return const SliverToBoxAdapter(
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(24),
+                          child: Text('No products available'),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.7,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return ProductCard(productsmodel: products[index]);
+                      }, childCount: products.length),
+                    ),
+                  );
+                }
+
+                return const SliverToBoxAdapter(child: SizedBox.shrink());
+              },
+            ),
+
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\screens\widgets\category_chip.dart ========== 
+import 'package:flutter/material.dart';
+import '../../../../core/theme.dart';
+
+class CategoryChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const CategoryChip({
+    super.key,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.primary : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            if (!isSelected)
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.05),
+                spreadRadius: 2,
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            if (isSelected)
+              BoxShadow(
+                color: AppTheme.primary.withValues(alpha: 0.3),
+                spreadRadius: 2,
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+          ],
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : AppTheme.textSecondary,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\screens\widgets\product_card.dart ========== 
+import 'package:ecommerce_app_huma_volve/features/home/services/models/products_model.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../core/theme.dart';
+import '../../../details/screens/product_details_screen.dart';
+
+class ProductCard extends StatelessWidget {
+  //final Product product;
+  final Productsmodel productsmodel;  
+  
+  const ProductCard({super.key, required this.productsmodel});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                ProductDetailsScreen( productsmodel: productsmodel,),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+          ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.08),
+              spreadRadius: 2,
+              blurRadius: 15,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Stack(
+                children: [
+                  Hero(
+                    tag: 'product-${productsmodel.id}',
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(24),
+                      ),
+                      child: Image.network(
+                        productsmodel.images![0],
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.favorite_border,
+                        size: 18,
+                        color: AppTheme.accent,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      productsmodel.title??"",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        height: 1.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '\$${productsmodel.price!.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            color: AppTheme.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: const BoxDecoration(
+                            color: AppTheme.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\services\home_service.dart ========== 
+
+import 'package:ecommerce_app_huma_volve/core/constants/api_endpoints.dart';
+import 'package:ecommerce_app_huma_volve/core/network/api_client%20.dart';
+import 'package:ecommerce_app_huma_volve/features/home/services/models/category_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/services/models/products_model.dart';
+
+class HomeService {
+  final ApiClient apiClient;
+  HomeService(this.apiClient);
+
+  Future<List<Categorymodel>> getCategories() async {
+    final response = await apiClient.dio.get(ApiEndpoints.categoryEndpoint);
+    final List JsonData = response.data;
+    final List<Categorymodel> categories = JsonData.map(
+      (e) => Categorymodel.fromJson(e),
+    ).toList();
+    return categories;
+  }
+
+  Future<List<Productsmodel>> getproducts(int categoryId) async {
+    final response = await apiClient.dio.get(
+      "{ApiEndpoints.categoriesEndpoint}/$categoryId/${ApiEndpoints.productsEndpoint}",
+    );
+
+    final List JsonData = response.data;
+    final List<Productsmodel> products = JsonData.map(
+      (e) => Productsmodel.fromJson(e),
+    ).toList();
+    return products;
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\services\models\category_model.dart ========== 
+class Categorymodel {
+  int? id;
+  String? name;
+  
+
+  Categorymodel(
+      {this.id,
+      this.name,
+  
+      });
+
+  Categorymodel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    
+    return data;
+  }
+} 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\home\services\models\products_model.dart ========== 
+class Productsmodel {
+  int? id;
+  String? title;
+  String? slug;
+  int? price;
+  String? description;
+  Category? category;
+  List<String>? images;
+  String? creationAt;
+  String? updatedAt;
+
+  Productsmodel(
+      {this.id,
+      this.title,
+      this.slug,
+      this.price,
+      this.description,
+      this.category,
+      this.images,
+      this.creationAt,
+      this.updatedAt});
+
+  Productsmodel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    slug = json['slug'];
+    price = json['price'];
+    description = json['description'];
+    category = json['category'] != null
+        ? Category.fromJson(json['category'])
+        : null;
+    images = json['images'].cast<String>();
+    creationAt = json['creationAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['slug'] = slug;
+    data['price'] = price;
+    data['description'] = description;
+    if (category != null) {
+      data['category'] = category!.toJson();
+    }
+    data['images'] = images;
+    data['creationAt'] = creationAt;
+    data['updatedAt'] = updatedAt;
+    return data;
+  }
+}
+
+class Category {
+  int? id;
+  String? name;
+  String? slug;
+  String? image;
+  String? creationAt;
+  String? updatedAt;
+
+  Category(
+      {this.id,
+      this.name,
+      this.slug,
+      this.image,
+      this.creationAt,
+      this.updatedAt});
+
+  Category.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    slug = json['slug'];
+    image = json['image'];
+    creationAt = json['creationAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['slug'] = slug;
+    data['image'] = image;
+    data['creationAt'] = creationAt;
+    data['updatedAt'] = updatedAt;
+    return data;
+  }
+} 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\main_navigation\screens\main_navigation_screen.dart ========== 
+import 'package:flutter/material.dart';
+import '../../../core/theme.dart';
+import '../../home/screens/home_screen.dart';
+import '../../cart/screens/cart_screen.dart';
+import '../../profile/screens/profile_screen.dart';
+
+class MainNavigationScreen extends StatefulWidget {
+  const MainNavigationScreen({super.key});
+
+  @override
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+}
+
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const CartScreen(),
+    const ProfileScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _screens[_currentIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            backgroundColor: Colors.white,
+            selectedItemColor: AppTheme.primary,
+            unselectedItemColor: Colors.grey.shade400,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            type: BottomNavigationBarType.fixed,
+            elevation: 0,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Icon(Icons.home_filled, size: 28),
+                ),
+                activeIcon: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Icon(Icons.home_filled, size: 32),
+                ),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Icon(Icons.shopping_cart_outlined, size: 28),
+                ),
+                activeIcon: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Icon(Icons.shopping_cart, size: 32),
+                ),
+                label: 'Cart',
+              ),
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Icon(Icons.person_outline, size: 28),
+                ),
+                activeIcon: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Icon(Icons.person, size: 32),
+                ),
+                label: 'Profile',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\main_navigation\screens\widgets\profile_menu_item.dart ========== 
+import 'package:flutter/material.dart';
+import '../../../../core/theme.dart';
+
+class ProfileMenuItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final bool isDestructive;
+
+  const ProfileMenuItem({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.isDestructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDestructive ? AppTheme.error : AppTheme.primary;
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.04),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        leading: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: isDestructive ? AppTheme.error : AppTheme.textPrimary,
+          ),
+        ),
+        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade400),
+        onTap: onTap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\profile\screens\profile_screen.dart ========== 
+import 'package:flutter/material.dart';
+import '../../../core/dummy_data.dart';
+import '../../../core/theme.dart';
+import '../../main_navigation/screens/widgets/profile_menu_item.dart';
+import '../../auth/login/screens/login_screen.dart';
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 24),
+            const Text(
+              'Profile',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 32),
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: CircleAvatar(
+                    radius: 56,
+                    backgroundImage: NetworkImage(dummyUser.profilePictureUrl),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(
+                    color: AppTheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.edit, size: 16, color: Colors.white),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              dummyUser.name,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              dummyUser.email,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(height: 32),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                children: [
+                  ProfileMenuItem(
+                    icon: Icons.shopping_bag_outlined,
+                    title: 'My Orders',
+                    onTap: () {},
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.favorite_border,
+                    title: 'Wishlist',
+                    onTap: () {},
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.location_on_outlined,
+                    title: 'Shipping Addresses',
+                    onTap: () {},
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.payment_outlined,
+                    title: 'Payment Methods',
+                    onTap: () {},
+                  ),
+                  ProfileMenuItem(
+                    icon: Icons.settings_outlined,
+                    title: 'Settings',
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 16),
+                  ProfileMenuItem(
+                    icon: Icons.logout,
+                    title: 'Logout',
+                    isDestructive: true,
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(opacity: animation, child: child);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+ 
+========== FILE: E:\intern fultter\Ecommerce-Huma-volve\lib\features\splash\screens\splash_screen.dart ========== 
+import 'package:flutter/material.dart';
+import '../../../core/theme.dart';
+import '../../auth/login/screens/login_screen.dart';
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _navigateToNext();
+  }
+
+  Future<void> _navigateToNext() async {
+    await Future.delayed(const Duration(seconds: 2));
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.shopping_bag,
+              size: 120,
+              color: AppTheme.primary,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Huma-volve',
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                fontSize: 40,
+                color: AppTheme.primary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Your Ultimate E-Commerce App',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(height: 48),
+            CircularProgressIndicator(
+              color: AppTheme.primary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

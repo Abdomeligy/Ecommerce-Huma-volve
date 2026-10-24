@@ -1,8 +1,12 @@
 
-import 'package:dio/dio.dart';
 import 'package:ecommerce_app_huma_volve/core/network/api_client%20.dart';
-import 'package:ecommerce_app_huma_volve/features/auth/login/services/login_sevices.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/login/data/data_sources/login_remote_data_source.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/login/data/repositories/login_repository_impl.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/login/use_cases/login_use_case.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/login/presentation/cubit/login_cubit.dart';
+import 'package:ecommerce_app_huma_volve/features/auth/login/presentation/cubit/login_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/primary_button.dart';
@@ -22,50 +26,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
+  late final LoginCubit loginCubit;
 
-  late final LoginSevices loginSevices;
-  late final ApiClient apiClient;
-
-  bool isLoading = false;
-
-  Future<void> login() async {
+  void login() {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-      final response = await loginSevices.login(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      print("ACESS token :${response.accessToken}");
-      print("Refresh token :${response.refreshToken}");
-
-      if (!mounted) return;
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => MainNavigationScreen(),
-        ),
-      );
-    } on DioException catch (e) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
+    loginCubit.login(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
   }
 
   @override
@@ -75,152 +46,178 @@ class _LoginScreenState extends State<LoginScreen> {
     emailController = TextEditingController();
     passwordController = TextEditingController();
 
-    apiClient = ApiClient();
-    loginSevices = LoginSevices(apiClient);
+    final apiClient = ApiClient();
+    final remoteDataSource = LoginRemoteDataSource(apiClient);
+    final repository = LoginRepositoryImpl(remoteDataSource);
+    final useCase = LoginUseCase(repository);
+
+    loginCubit = LoginCubit(useCase);
   }
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    loginCubit.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(32.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 60),
-                Icon(
-                  Icons.shopping_bag,
-                  size: 80,
-                  color: AppTheme.primary,
-                ),
-                const SizedBox(height: 32),
-                Text(
-                  'Welcome Back!',
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayLarge
-                      ?.copyWith(fontSize: 32),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Login to continue your shopping',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 64),
-                CustomTextField(
-                  controller: emailController,
-                  hintText: 'Email Address',
-                  prefixIcon: Icons.email_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                CustomTextField(
-                  controller: passwordController,
-                  hintText: 'Password',
-                  prefixIcon: Icons.lock_outline,
-                  isPassword: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(
-                      color: AppTheme.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                PrimaryButton(
-                  text: 'Login',
-                  isLoading: isLoading,
-                  onPressed: () {
-                      if (!isLoading) {
-                    login();
-                   }
-                   },
-                ),
+    return BlocConsumer<LoginCubit, LoginState>(
+      bloc: loginCubit,
+      listener: (context, state) {
+        if (state is LoginSuccess) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => MainNavigationScreen(),
+            ),
+          );
+        } else if (state is LoginFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is LoginLoading;
 
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        return Scaffold(
+          backgroundColor: AppTheme.background,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(32.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text('Don\'t have an account? '),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (
-                              context,
-                              animation,
-                              secondaryAnimation,
-                            ) =>
-                                const SignUpScreen(),
-                            transitionsBuilder: (
-                              context,
-                              animation,
-                              secondaryAnimation,
-                              child,
-                            ) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
-                          ),
-                        );
+                    const SizedBox(height: 60),
+                    Icon(
+                      Icons.shopping_bag,
+                      size: 80,
+                      color: AppTheme.primary,
+                    ),
+                    const SizedBox(height: 32),
+                    Text(
+                      'Welcome Back!',
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayLarge
+                          ?.copyWith(fontSize: 32),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Login to continue your shopping',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 64),
+                    CustomTextField(
+                      controller: emailController,
+                      hintText: 'Email Address',
+                      prefixIcon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!value.contains('@')) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
                       },
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextField(
+                      controller: passwordController,
+                      hintText: 'Password',
+                      prefixIcon: Icons.lock_outline,
+                      isPassword: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerRight,
                       child: Text(
-                        'Sign Up',
+                        'Forgot Password?',
                         style: TextStyle(
                           color: AppTheme.primary,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+                    const SizedBox(height: 32),
+                    PrimaryButton(
+                      text: 'Login',
+                      isLoading: isLoading,
+                      onPressed: () {
+                        if (!isLoading) {
+                          login();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't have an account? "),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                ) =>
+                                    const SignUpScreen(),
+                                transitionsBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: AppTheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

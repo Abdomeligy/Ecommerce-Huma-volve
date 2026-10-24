@@ -11,7 +11,7 @@ class HomeCubit extends Cubit<HomeStates> {
     try {
       final Categories = await homeService.getCategories();
       emit(CategoriesSuccess(Categories));
-      final products = await homeService.getproducts(Categories[0].hashCode);
+      final products = await homeService.getproducts(Categories[0].id??0);
       emit(productSuccess(products));
     } catch (e) {
       emit(productError(e.toString()));

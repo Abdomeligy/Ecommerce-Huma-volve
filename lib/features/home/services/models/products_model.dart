@@ -1,3 +1,6 @@
+
+import '../../domain/entities/home_product_entity.dart';
+
 class Productsmodel {
   int? id;
   String? title;
@@ -9,16 +12,17 @@ class Productsmodel {
   String? creationAt;
   String? updatedAt;
 
-  Productsmodel(
-      {this.id,
-      this.title,
-      this.slug,
-      this.price,
-      this.description,
-      this.category,
-      this.images,
-      this.creationAt,
-      this.updatedAt});
+  Productsmodel({
+    this.id,
+    this.title,
+    this.slug,
+    this.price,
+    this.description,
+    this.category,
+    this.images,
+    this.creationAt,
+    this.updatedAt,
+  });
 
   Productsmodel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -26,28 +30,41 @@ class Productsmodel {
     slug = json['slug'];
     price = json['price'];
     description = json['description'];
-    category = json['category'] != null
-        ? new Category.fromJson(json['category'])
+
+    category = json['category'] is Map<String, dynamic>
+        ? Category.fromJson(json['category'] as Map<String, dynamic>)
         : null;
-    images = json['images'].cast<String>();
+
+    images = json['images'] is List
+        ? (json['images'] as List).whereType<String>().toList()
+        : [];
+
     creationAt = json['creationAt'];
     updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['slug'] = this.slug;
-    data['price'] = this.price;
-    data['description'] = this.description;
-    if (this.category != null) {
-      data['category'] = this.category!.toJson();
-    }
-    data['images'] = this.images;
-    data['creationAt'] = this.creationAt;
-    data['updatedAt'] = this.updatedAt;
-    return data;
+    return {
+      'id': id,
+      'title': title,
+      'slug': slug,
+      'price': price,
+      'description': description,
+      'category': category?.toJson(),
+      'images': images,
+      'creationAt': creationAt,
+      'updatedAt': updatedAt,
+    };
+  }
+
+  HomeProductEntity toEntity() {
+    return HomeProductEntity(
+      id: id ?? 0,
+      title: title ?? '',
+      price: price ?? 0,
+      description: description ?? '',
+      images: images ?? [],
+    );
   }
 }
 
@@ -59,13 +76,14 @@ class Category {
   String? creationAt;
   String? updatedAt;
 
-  Category(
-      {this.id,
-      this.name,
-      this.slug,
-      this.image,
-      this.creationAt,
-      this.updatedAt});
+  Category({
+    this.id,
+    this.name,
+    this.slug,
+    this.image,
+    this.creationAt,
+    this.updatedAt,
+  });
 
   Category.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -77,13 +95,13 @@ class Category {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['slug'] = this.slug;
-    data['image'] = this.image;
-    data['creationAt'] = this.creationAt;
-    data['updatedAt'] = this.updatedAt;
-    return data;
+    return {
+      'id': id,
+      'name': name,
+      'slug': slug,
+      'image': image,
+      'creationAt': creationAt,
+      'updatedAt': updatedAt,
+    };
   }
 }
