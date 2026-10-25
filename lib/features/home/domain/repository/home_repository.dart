@@ -5,5 +5,9 @@ import '../entities/home_product_entity.dart';
 abstract class HomeRepository {
   Future<List<HomeCategoryEntity>> getCategories();
 
-  Future<List<HomeProductEntity>> getProducts(int categoryId);
+  Future<List<HomeProductEntity>> getProducts(
+    int categoryId, {
+    required int offset,
+    required int limit,
+  });
 }

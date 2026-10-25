@@ -23,17 +23,23 @@ class HomeRepositoryImpl implements HomeRepository {
       return categoryModel.toEntity();
     }).toList();
   }
+@override
+Future<List<HomeProductEntity>> getProducts(
+  int categoryId, {
+  required int offset,
+  required int limit,
+}) async {
+  final productsJson = await remoteDataSource.getProducts(
+    categoryId,
+    offset: offset,
+    limit: limit,
+  );
 
-  @override
-  Future<List<HomeProductEntity>> getProducts(int categoryId) async {
-    final productsJson = await remoteDataSource.getProducts(categoryId);
-
-    return productsJson.map((json) {
-      final productModel = Productsmodel.fromJson(
-        Map<String, dynamic>.from(json as Map),
-      );
-
-      return productModel.toEntity();
-    }).toList();
-  }
+  return productsJson.map((json) {
+    final productModel = Productsmodel.fromJson(
+      Map<String, dynamic>.from(json as Map),
+    );
+    return productModel.toEntity();
+  }).toList();
+}
 }

@@ -1,12 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme.dart';
 import '../presentation/cubit/home_cubit.dart';
 import '../presentation/cubit/home_states.dart';
-import 'widgets/product_card.dart';
 import 'widgets/category_chip.dart';
+import 'widgets/pagination_loading_widget.dart';
+import 'widgets/product_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +17,29 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedCategoryIndex = 0;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 300) {
+      context.read<HomeCubit>().fetchNextPage();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: AppTheme.background,
       body: SafeArea(
         child: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
@@ -152,8 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                 return CategoryChip(
                                   label: category.name,
-                                  isSelected:
-                                      _selectedCategoryIndex == index,
+                                  isSelected: _selectedCategoryIndex == index,
                                   onTap: () {
                                     setState(() {
                                       _selectedCategoryIndex = index;
@@ -241,8 +264,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 24),
+            BlocBuilder<HomeCubit, HomeStates>(
+              builder: (context, state) {
+                if (state is HomeSuccess && state.isLoadingMore) {
+                  return const SliverToBoxAdapter(
+                    child: PaginationLoadingWidget(),
+                  );
+                }
+                return const SliverToBoxAdapter(child: SizedBox(height: 24));
+              },
             ),
           ],
         ),
